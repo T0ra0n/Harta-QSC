@@ -19,9 +19,11 @@
 
   const map = L.map('map', {
     zoomControl: true,
-    maxBounds: ROMANIA_BOUNDS,
-    maxBoundsViscosity: 1.0,
   });
+
+  const DEFAULT_BOUNDS_VISCOSITY = 1.0;
+  map.setMaxBounds(ROMANIA_BOUNDS);
+  map.options.maxBoundsViscosity = DEFAULT_BOUNDS_VISCOSITY;
 
   map.fitBounds(ROMANIA_BOUNDS, { padding: [18, 18] });
   map.setMinZoom(6);
@@ -33,6 +35,30 @@
     maxZoom: 22,
   }).addTo(map);
 
+  const headerEl = document.querySelector('.app-header');
+  const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
+  const autoPanPaddingTopLeft = [18, Math.round(headerHeight + 18)];
+  const autoPanPaddingBottomRight = [18, 18];
+
+  function stabilizeAutoPan(popup) {
+    setTimeout(() => {
+      popup.options.autoPan = false;
+    }, 0);
+  }
+
+  map.on('popupopen', () => {
+    map.setMaxBounds(null);
+    map.options.maxBoundsViscosity = 0;
+  });
+
+  map.on('popupclose', (e) => {
+    if (!e.popup?.options) return;
+    e.popup.options.autoPan = true;
+
+    map.setMaxBounds(ROMANIA_BOUNDS);
+    map.options.maxBoundsViscosity = DEFAULT_BOUNDS_VISCOSITY;
+  });
+
   function escapeHtml(value) {
     return String(value)
       .replaceAll('&', '&amp;')
@@ -41,6 +67,84 @@
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&#039;');
   }
+
+  const fsOverlayEl = document.getElementById('fullscreenOverlay');
+  const fsImageEl = document.getElementById('fullscreenImage');
+
+  /** @type {{ location: any, index: number } | null} */
+  let fsState = null;
+
+  function renderFullscreen() {
+    if (!fsOverlayEl || !fsImageEl || !fsState) return;
+
+    const images = Array.isArray(fsState.location?.images)
+      ? fsState.location.images
+      : [];
+
+    if (images.length === 0) return;
+
+    const safeIndex = ((fsState.index % images.length) + images.length) % images.length;
+    fsState.index = safeIndex;
+
+    const img = images[safeIndex];
+    fsImageEl.src = img.src;
+    fsImageEl.alt = img.alt || 'Imagine';
+  }
+
+  function openFullscreen(location, index) {
+    if (!fsOverlayEl || !fsImageEl) return;
+
+    fsState = { location, index };
+    renderFullscreen();
+
+    fsOverlayEl.classList.add('is-open');
+    fsOverlayEl.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeFullscreen() {
+    if (!fsOverlayEl || !fsImageEl) return;
+
+    fsState = null;
+
+    fsOverlayEl.classList.remove('is-open');
+    fsOverlayEl.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+
+    fsImageEl.removeAttribute('src');
+    fsImageEl.removeAttribute('alt');
+  }
+
+  if (fsOverlayEl) {
+    fsOverlayEl.addEventListener('click', (e) => {
+      const target = /** @type {HTMLElement} */ (e.target);
+      const actionEl = target.closest('[data-action="close"]');
+      if (!actionEl) return;
+      closeFullscreen();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!fsOverlayEl?.classList.contains('is-open')) return;
+
+    if (e.key === 'Escape') {
+      closeFullscreen();
+      return;
+    }
+
+    if (!fsState) return;
+
+    if (e.key === 'ArrowRight') {
+      fsState.index += 1;
+      renderFullscreen();
+      return;
+    }
+
+    if (e.key === 'ArrowLeft') {
+      fsState.index -= 1;
+      renderFullscreen();
+    }
+  });
 
   function buildPopupHtml(location) {
     const title = escapeHtml(location.title);
@@ -78,7 +182,7 @@
 
         <div class="gallery" style="margin-top: 10px;">
           <div class="gallery__hero">
-            <img id="${heroId}" src="${firstSrc}" alt="${firstAlt}" draggable="false" />
+            <img id="${heroId}" data-active-index="0" src="${firstSrc}" alt="${firstAlt}" draggable="false" />
           </div>
           <div id="${thumbsId}" class="gallery__thumbs" aria-label="Miniaturi">
             ${thumbs}
@@ -99,6 +203,13 @@
     const thumbsEl = popupEl.querySelector(`#qsc-thumbs-${CSS.escape(location.id)}`);
     if (!heroEl || !thumbsEl) return;
 
+    heroEl.addEventListener('click', (e) => {
+      L.DomEvent.preventDefault(e);
+      L.DomEvent.stopPropagation(e);
+      const index = Number(heroEl.getAttribute('data-active-index') ?? '0');
+      openFullscreen(location, Number.isNaN(index) ? 0 : index);
+    });
+
     const thumbButtons = /** @type {NodeListOf<HTMLButtonElement>} */ (
       thumbsEl.querySelectorAll('[data-thumb-index]')
     );
@@ -117,6 +228,7 @@
 
       heroEl.setAttribute('src', img.src);
       heroEl.setAttribute('alt', img.alt);
+      heroEl.setAttribute('data-active-index', String(index));
 
       thumbButtons.forEach((el) => {
         const elIndex = Number(el.getAttribute('data-thumb-index'));
@@ -137,7 +249,8 @@
         maxWidth: 420,
         autoPan: true,
         keepInView: false,
-        autoPanPadding: [18, 18],
+        autoPanPaddingTopLeft,
+        autoPanPaddingBottomRight,
         className: 'qsc-popup',
       });
 
@@ -149,7 +262,10 @@
 
       marker.on('mouseover', () => marker.openTooltip());
       marker.on('mouseout', () => marker.closeTooltip());
-      marker.on('popupopen', (e) => wirePopupGallery(loc, e.popup));
+      marker.on('popupopen', (e) => {
+        wirePopupGallery(loc, e.popup);
+        stabilizeAutoPan(e.popup);
+      });
     });
   }
 

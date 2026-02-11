@@ -168,8 +168,8 @@ body {
 }
 
 .gallery__thumb[aria-selected="true"] {
-  outline: 2px solid rgba(83, 179, 255, 0.9);
-  border-color: rgba(83, 179, 255, 0.3);
+  border-color: rgba(83, 179, 255, 0.55);
+  box-shadow: 0 0 0 2px rgba(83, 179, 255, 0.9) inset;
 }
 
 .gallery__thumb img {
@@ -180,6 +180,60 @@ body {
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+/* Fullscreen imagine (overlay) */
+.fs {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+}
+
+.fs.is-open {
+  display: block;
+}
+
+.fs__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.fs__content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.fs__content img {
+  max-width: min(1200px, calc(100vw - 36px));
+  max-height: calc(100vh - 36px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.fs__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.fs__close:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 @media (max-width: 480px) {

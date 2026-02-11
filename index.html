@@ -23,6 +23,14 @@
       </section>
     </main>
 
+    <div id="fullscreenOverlay" class="fs" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="fs__backdrop" data-action="close"></div>
+      <div class="fs__content" role="document">
+        <img id="fullscreenImage" alt="Imagine" />
+        <button class="fs__close" type="button" aria-label="Închide" data-action="close">✕</button>
+      </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="./app.js"></script>
   </body>
