@@ -1,0 +1,9 @@
+{
+  "name": "harta-qsc",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node ./scripts/generate_locations.mjs",
+    "watch": "node ./scripts/watch_locations.mjs"
+  }
+}

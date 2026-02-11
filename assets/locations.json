@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "generatedAt": "manual",
+  "locations": [
+    {
+      "id": "bucuresti",
+      "title": "București",
+      "subtitle": "Exemplu lucrare",
+      "description": "Descriere București (exemplu). Aici poți scrie textul care apare în popup.",
+      "lat": 44.4268,
+      "lng": 26.1025,
+      "images": [
+        {
+          "src": "./assets/lucrari/bucuresti/mauralbu-bucuresti-3586306_1280.jpg",
+          "thumb": "./assets/lucrari/bucuresti/mauralbu-bucuresti-3586306_1280.jpg",
+          "alt": "București - Imagine 1"
+        },
+        {
+          "src": "./assets/lucrari/bucuresti/paulaaph-bucharest-2683691_1280.jpg",
+          "thumb": "./assets/lucrari/bucuresti/paulaaph-bucharest-2683691_1280.jpg",
+          "alt": "București - Imagine 2"
+        },
+        {
+          "src": "./assets/lucrari/bucuresti/mastermind76-summer-2892871_1280.jpg",
+          "thumb": "./assets/lucrari/bucuresti/mastermind76-summer-2892871_1280.jpg",
+          "alt": "București - Imagine 3"
+        }
+      ]
+    },
+    {
+      "id": "cluj",
+      "title": "Cluj-Napoca",
+      "subtitle": "Exemplu lucrare",
+      "description": "Descriere Cluj-Napoca (exemplu). Textul acesta se poate schimba fără să atingi codul.",
+      "lat": 46.7712,
+      "lng": 23.6236,
+      "images": [
+        {
+          "src": "./assets/lucrari/cluj/bogdan_p-cluj-napoca-3683313_1280.jpg",
+          "thumb": "./assets/lucrari/cluj/bogdan_p-cluj-napoca-3683313_1280.jpg",
+          "alt": "Cluj-Napoca - Imagine 1"
+        },
+        {
+          "src": "./assets/lucrari/cluj/freestocks-photos-city-2939834_1280.jpg",
+          "thumb": "./assets/lucrari/cluj/freestocks-photos-city-2939834_1280.jpg",
+          "alt": "Cluj-Napoca - Imagine 2"
+        }
+      ]
+    },
+    {
+      "id": "iasi",
+      "title": "Iași",
+      "subtitle": "Exemplu lucrare",
+      "description": "Descriere Iași (exemplu). Poți pune aici detalii despre lucrări, perioadă, etc.",
+      "lat": 47.1585,
+      "lng": 27.6014,
+      "images": [
+        {
+          "src": "./assets/lucrari/iasi/iciprian-iasi-4023664_1280.jpg",
+          "thumb": "./assets/lucrari/iasi/iciprian-iasi-4023664_1280.jpg",
+          "alt": "Iași - Imagine 1"
+        },
+        {
+          "src": "./assets/lucrari/iasi/goguoksana-palace-5544280_1280.jpg",
+          "thumb": "./assets/lucrari/iasi/goguoksana-palace-5544280_1280.jpg",
+          "alt": "Iași - Imagine 2"
+        },
+        {
+          "src": "./assets/lucrari/iasi/getodacian-architecture-3356715_1280.jpg",
+          "thumb": "./assets/lucrari/iasi/getodacian-architecture-3356715_1280.jpg",
+          "alt": "Iași - Imagine 3"
+        }
+      ]
+    }
+  ]
+}
